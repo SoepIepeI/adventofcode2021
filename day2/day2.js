@@ -8,9 +8,6 @@ var list = ["forward 7", "forward 9", "forward 9", "down 3", "down 8", "down 3",
     var direction = values[0];
     var amount = parseInt(values[1]);
 
-    console.log(direction);
-    console.log(amount);
-
     switch(direction){
         case "forward":
             horizontalChange += amount;
