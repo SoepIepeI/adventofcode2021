@@ -4,6 +4,7 @@ for line in file:lines() do
     table.insert (arr, line);
 end
 
+-- PART 1
 Gamma = "";
 Epsilon = "";
 
@@ -29,7 +30,32 @@ for i = 1, #arr[1] do
     end
 end
 
-print(tonumber(Gamma, 2));
-print(tonumber(Epsilon, 2));
-print("-------------------");
 print(tonumber(Gamma, 2) * tonumber(Epsilon, 2));
+
+
+-- PART 2
+local index = 1;
+
+function SplitNumbers(data, iGiveUpTryingToDoItInOneGo)
+    local negative = {};
+    local positive = {};
+    for s, arrElem in ipairs(data) do
+        local value = string.sub(arrElem, index, index);
+        table.insert((value == "0" and negative or positive), arrElem);
+    end
+
+    index = index + 1;
+    
+    if (#positive == 1 and #negative == 1) then
+        return iGiveUpTryingToDoItInOneGo and positive or negative;
+    end
+
+    return iGiveUpTryingToDoItInOneGo and SplitNumbers((#positive >= #negative and positive or negative), iGiveUpTryingToDoItInOneGo) or SplitNumbers((#positive >= #negative and negative or positive), iGiveUpTryingToDoItInOneGo);
+end
+
+local oxygen = SplitNumbers(arr, true);
+index = 1;
+local co2 = SplitNumbers(arr, false);
+
+print(tonumber(oxygen[1], 2) * tonumber(co2[1], 2));
+
