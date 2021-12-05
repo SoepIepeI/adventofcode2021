@@ -5,14 +5,21 @@ try {
 
   var lines = file.split("\n");
 
-  var totals = [];
+  console.log("Result PART 1: "+ processFile(lines, false));
+  console.log("Result PART 2: "+ processFile(lines, true));
+} catch (err) {
+  console.error(err);
+}
+
+function processFile(lines, diagonals){
+    var totals = [];
   lines.forEach(line => {
-    totals = totals.concat(getCoordsFromLine(line));
+    totals = totals.concat(getCoordsFromLine(line, diagonals));
   });
 
-  map = {}
-  totals.forEach(function(obj) {
-        var key = JSON.stringify(obj)
+    map = {}
+    totals.forEach(function(total) {
+        var key = JSON.stringify(total)
         map[key] = (map[key] || 0) + 1
     });
 
@@ -23,12 +30,10 @@ try {
         }
     }
 
-    console.log("Result: "+count);
-} catch (err) {
-  console.error(err);
+    return count;
 }
 
-function getCoordsFromLine(line) {
+function getCoordsFromLine(line, diagonals) {
     var [firstX, secondX, firstY, secondY] = breakUpLine(line);
 
     var allCoords = [];
@@ -36,6 +41,8 @@ function getCoordsFromLine(line) {
         allCoords = allCoords.concat(getNumbersBetween(firstY, secondY, firstX, true));
     }else if (firstY == secondY){
         allCoords = allCoords.concat(getNumbersBetween(firstX, secondX, firstY, false));
+    }else if(diagonals){
+        allCoords = allCoords.concat(getNumbersBetweenDiagonal(firstX, secondX, firstY, secondY));
     }
 
     return allCoords;
@@ -49,6 +56,35 @@ function breakUpLine(line){
     var secondY = parseInt(brokenUp[2]);
 
     return [firstX, secondX, firstY, secondY];
+}
+
+function getNumbersBetweenDiagonal(firstX, secondX, firstY, secondY) {
+    var allCoords = [];
+
+    var diffX = firstX - secondX > 0 ? firstX - secondX : (firstX - secondX)*-1;
+    var diffY = firstY - secondY > 0 ? firstY - secondY : (firstY - secondY)*-1;
+
+    if(diffX == diffY){
+        if (firstX > secondX && firstY > secondY){
+            for (var i = firstX, j = firstY; i >= secondX; i--, j--) {
+                allCoords.push({"x":i, "y":j});
+            }
+        }else if (firstX < secondX && firstY < secondY){
+            for (var i = firstX, j = firstY; i <= secondX; i++, j++) {
+                allCoords.push({"x":i, "y":j});
+            }
+        }else if(firstX < secondX && firstY > secondY){
+            for (var i = firstX, j = firstY; i <= secondX; i++, j--) {
+                allCoords.push({"x":i, "y":j});
+            }
+        }else if(firstX > secondX && firstY < secondY){
+            for (var i = firstX, j = firstY; i >= secondX; i--, j++) {
+                allCoords.push({"x":i, "y":j});
+            }
+        }
+    }
+
+    return allCoords;
 }
 
 function getNumbersBetween(firstCoord, secondCoord, base, baseIsX) {
@@ -72,6 +108,5 @@ function getNumbersBetween(firstCoord, secondCoord, base, baseIsX) {
         }
     }
    
-
     return allCoords;
 }
