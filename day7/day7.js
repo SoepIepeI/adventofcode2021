@@ -2,28 +2,36 @@ var crabs = [1101,1,29,67,1102,0,1,65,1008,65,35,66,1005,66,28,1,67,65,20,4,0,10
 var lowestPosition = Math.min(...crabs);
 var highestPosition = Math.max(...crabs);
 
-smallestTotalSteps = 999999999;
-for(i = lowestPosition; i <= highestPosition; i++){
-    var totalValueForMovingAllCrabsToPosition = 0;
-    crabs.forEach(crab => {
-        var smallestStep = highestPosition;
-        
-        var stepsToI = i < crab ? crab-i : (crab - i) *-1;
-        var newStepsToI = 0;
-        for(var p = 0; p < stepsToI; p++){
-            newStepsToI += stepsToI-p;
+function toMakeItWorkForPartOneAndTwo(part2){
+    smallestTotalSteps = 999999999;
+    for(i = lowestPosition; i <= highestPosition; i++){
+        var totalValueForMovingAllCrabsToPosition = 0;
+        crabs.forEach(crab => {
+            var smallestStep = highestPosition;
+            
+            var stepsToI = i < crab ? crab-i : (crab - i) *-1;
+
+            if(part2){
+                var newStepsToI = 0;
+                for(var p = 0; p < stepsToI; p++){
+                    newStepsToI += stepsToI-p;
+                }
+
+                if(newStepsToI < smallestStep){
+                    smallestStep = i;
+                }
+            }
+
+            totalValueForMovingAllCrabsToPosition += part2 ? newStepsToI : stepsToI;
+        });
+
+        if(smallestTotalSteps>totalValueForMovingAllCrabsToPosition){
+            smallestTotalSteps = totalValueForMovingAllCrabsToPosition;
         }
-
-        if(newStepsToI < smallestStep){
-            smallestStep = i;
-        }
-
-        totalValueForMovingAllCrabsToPosition += newStepsToI;
-    });
-
-    if(smallestTotalSteps>totalValueForMovingAllCrabsToPosition){
-        smallestTotalSteps = totalValueForMovingAllCrabsToPosition;
     }
+
+    return smallestTotalSteps;
 }
 
-console.log(smallestTotalSteps);
+console.log("PART1: "+toMakeItWorkForPartOneAndTwo(false));
+console.log("PART2: "+toMakeItWorkForPartOneAndTwo(true));
